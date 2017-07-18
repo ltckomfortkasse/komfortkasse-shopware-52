@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <element required="true" type="boolean" scope="shop">
+            <name>active</name>
+            <label lang="de">Plugin aktivieren</label>
+            <label lang="en">Enable plugin</label>
+            <value>true</value>
+        </element>
+        <element required="true" type="boolean" scope="shop">
+            <name>cancelDetail</name>
+            <label lang="de">Bestellpositionen stornieren (Shopware ERP)</label>
+            <label lang="en">Cancel order details (Shopware ERP)</label>
+            <value>false</value>
+            <description lang="de">Storniert Bestellpositionen wenn eine Bestellung storniert wird. Nur relevant wenn Shopware ERP (ehem. Pickware) verwendet wird!</description>
+            <description lang="en">Cancels order items when an order is canceled. Only relevant if Shopware ERP (former Pickware) is used!</description>
+        </element>
+    </elements>
+</config>
