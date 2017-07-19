@@ -1,38 +1,45 @@
 <?php
+
 namespace LtcKomfortkasse;
 
 class LtcKomfortkasse extends \Shopware\Components\Plugin
 {
+
+
     public static function getSubscribedEvents()
     {
-        return [
-                'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onPostDispatchCheckout',
-                'Shopware\Models\Order\Order::postUpdate' => 'updateOrder',
-                'Enlight_Controller_Dispatcher_ControllerPath_Api_Document' => 'onDocumentApiController',
-                'Enlight_Controller_Dispatcher_ControllerPath_Api_LtcKomfortkasseVersion' => 'onDocumentApiLtcKomfortkasseVersion',
-                'Enlight_Controller_Front_StartDispatch' => 'onEnlightControllerFrontStartDispatch'
+        return [ 'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onPostDispatchCheckout','Shopware\Models\Order\Order::postUpdate' => 'updateOrder','Enlight_Controller_Dispatcher_ControllerPath_Api_Document' => 'onDocumentApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_LtcKomfortkasseVersion' => 'onDocumentApiLtcKomfortkasseVersion','Enlight_Controller_Front_StartDispatch' => 'onEnlightControllerFrontStartDispatch'
         ];
+
     }
+
 
     public function onDocumentApiController()
     {
         return $this->getPath() . '/Controllers/Api/Document.php';
+
     }
+
 
     public function onDocumentApiLtcKomfortkasseVersion()
     {
         return $this->getPath() . '/Controllers/Api/LtcKomfortkasseVersion.php';
+
     }
+
 
     public function onEnlightControllerFrontStartDispatch()
     {
         $this->container->get('loader')->registerNamespace('Shopware\Components', $this->getPath() . '/Components/');
+
     }
 
-    public function updateOrder(\Enlight_Controller_EventArgs $arguments)
+
+    public function updateOrder(\Enlight_Controller_ActionEventArgs $arguments)
     {
-        $config = $this->Config();
-        if (empty($config->cancelDetail)) {
+        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
+        if (!$config ['cancelDetail']) {
             return;
         }
         if (!method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonCanceledQuantity'))
@@ -66,34 +73,33 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
     public function onPostDispatchCheckout(\Enlight_Controller_EventArgs $arguments)
     {
-        $config = $this->Config();
-        if (empty($config->active)) {
-            return;
-        }
         $subject = $arguments->getSubject();
         $request = $subject->Request();
-        $response = $subject->Response();
         $action = $request->getActionName();
-
-        $temp_id = $_SESSION ['Shopware'] ['sessionId'];
-        $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
-        ));
-        $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
 
         if ($action === 'finish') {
 
-            $query = http_build_query(array ('id' => $id,'url' => $site_url
-            ));
+            $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
+            if (!$config ['active']) {
+                return;
+            }
 
-            $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-            );
+            $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
+            $ordernum = $_SESSION ['Shopware'] ['sOrderVariables']->sOrderNumber;
+            if ($ordernum) {
+                $query = http_build_query(array ('number' => $ordernum,'url' => $site_url ));
+            } else {
+                $temp_id = $_SESSION ['Shopware'] ['sessionId'];
+                $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
+                ));
 
-            $context = stream_context_create(array ('http' => $contextData
-            ));
+                $query = http_build_query(array ('id' => $id,'url' => $site_url ));
+            }
+            $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query);
+            $context = stream_context_create(array ('http' => $contextData));
 
             $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
         }
 
     }
-
 }
