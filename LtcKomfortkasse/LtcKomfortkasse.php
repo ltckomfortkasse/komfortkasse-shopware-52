@@ -36,7 +36,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
     }
 
 
-    public function updateOrder(\Enlight_Controller_ActionEventArgs $arguments)
+    public function updateOrder($arguments)
     {
         $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
         if (!$config ['cancelDetail']) {
@@ -71,7 +71,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
     }
 
 
-    public function onPostDispatchCheckout(\Enlight_Controller_EventArgs $arguments)
+    public function onPostDispatchCheckout($arguments)
     {
         $subject = $arguments->getSubject();
         $request = $subject->Request();

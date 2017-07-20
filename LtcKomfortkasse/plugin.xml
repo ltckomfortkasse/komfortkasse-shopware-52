@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/plugin.xsd">
     <label lang="de">Komfortkasse - Zahlung per Banküberweisung</label>
     <label lang="en">Komfortkasse - pay by bank wire transfer</label>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
     <link>https://komfortkasse.eu/shopware</link>
     <author>Komfortkasse</author>
     <compatibility minVersion="5.2.17"/>
@@ -15,5 +15,9 @@
     <changelog version="1.3.1">
         <changes lang="de">Bugfix für sofortige Übertragung</changes>
         <changes lang="en">Bugfix for instant order transmission</changes>
+    </changelog>
+    <changelog version="1.3.2">
+        <changes lang="de">Verbesserte PHP7 Kompatibilität</changes>
+        <changes lang="en">Improved PHP7 compatibility</changes>
     </changelog>
 </plugin>
