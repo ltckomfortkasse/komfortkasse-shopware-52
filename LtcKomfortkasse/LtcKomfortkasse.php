@@ -8,12 +8,22 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
     public static function getSubscribedEvents()
     {
-        return [ 'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onPostDispatchCheckout','Shopware\Models\Order\Order::postUpdate' => 'updateOrder','Enlight_Controller_Dispatcher_ControllerPath_Api_Document' => 'onDocumentApiController',
-                'Enlight_Controller_Dispatcher_ControllerPath_Api_LtcKomfortkasseVersion' => 'onDocumentApiLtcKomfortkasseVersion','Enlight_Controller_Front_StartDispatch' => 'onEnlightControllerFrontStartDispatch'
+        return [
+                'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onPostDispatchCheckout',
+                'Shopware\Models\Order\Order::postUpdate' => 'updateOrder',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_Document' => 'onDocumentApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_LtcKomfortkasseVersion' => 'onDocumentApiLtcKomfortkasseVersion',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_Refund' => 'onRefundApiController',
+                'Enlight_Controller_Front_StartDispatch' => 'onEnlightControllerFrontStartDispatch'
         ];
 
     }
 
+    public function onRefundApiController()
+    {
+        return $this->getPath() . '/Controllers/Api/Refund.php';
+
+    }
 
     public function onDocumentApiController()
     {
