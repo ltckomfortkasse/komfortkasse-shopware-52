@@ -14,6 +14,10 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 'Enlight_Controller_Dispatcher_ControllerPath_Api_Document' => 'onDocumentApiController',
                 'Enlight_Controller_Dispatcher_ControllerPath_Api_LtcKomfortkasseVersion' => 'onDocumentApiLtcKomfortkasseVersion',
                 'Enlight_Controller_Dispatcher_ControllerPath_Api_Refund' => 'onRefundApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_OrderStatus' => 'onOrderStatusApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_PaymentStatus' => 'onPaymentStatusApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_PaymentMeans' => 'onPaymentMeansApiController',
+                'Enlight_Controller_Dispatcher_ControllerPath_Api_OrderId' => 'onOrderIdApiController',
                 'Enlight_Controller_Front_StartDispatch' => 'onEnlightControllerFrontStartDispatch'
         ];
 
@@ -22,7 +26,26 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
     public function onRefundApiController()
     {
         return $this->getPath() . '/Controllers/Api/Refund.php';
+    }
 
+    public function onOrderStatusApiController()
+    {
+        return $this->getPath() . '/Controllers/Api/OrderStatus.php';
+    }
+
+    public function onPaymentStatusApiController()
+    {
+        return $this->getPath() . '/Controllers/Api/PaymentStatus.php';
+    }
+
+    public function onPaymentMeansApiController()
+    {
+        return $this->getPath() . '/Controllers/Api/PaymentMeans.php';
+    }
+
+    public function onOrderIdApiController()
+    {
+        return $this->getPath() . '/Controllers/Api/OrderId.php';
     }
 
     public function onDocumentApiController()
