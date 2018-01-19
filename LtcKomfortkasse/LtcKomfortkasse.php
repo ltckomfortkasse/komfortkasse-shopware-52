@@ -72,13 +72,42 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
     public function updateOrder($arguments)
     {
         $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
+        if (!$config ['active']) {
+            return;
+        }
+
+        $order = $arguments->get('entity');
+
+        Shopware()->PluginLogger()->info('komfortkasse updateorder ' . $order->getNumber());
+
+        // if order is new: notify Komfortkasse about order
+
+        if ($order->getNumber()) {
+            $historyList = $order->getHistory();
+            Shopware()->PluginLogger()->info('komfortkasse count ' . $historyList->count());
+            Shopware()->PluginLogger()->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
+            if ($historyList->count() == 0 || ($historyList->count() == 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
+                Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
+                $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
+                $query = http_build_query(array ('id' => $order->getId(),'url' => $site_url
+                ));
+                $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+                );
+                $context = stream_context_create(array ('http' => $contextData
+                ));
+                $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+                return;
+            }
+        }
+
+        // if order has been cancelled: cancel details in pickware/shopware erp
+
         if (!$config ['cancelDetail']) {
             return;
         }
         if (!method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonCanceledQuantity'))
             return;
 
-        $order = $arguments->get('entity');
         if (strpos($order->getTransactionID(), 'Komfortkasse') === false)
             return;
 
@@ -103,7 +132,6 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
     }
 
-
     public function onPostDispatchCheckout($arguments)
     {
         $subject = $arguments->getSubject();
@@ -111,6 +139,8 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
         $action = $request->getActionName();
 
         if ($action === 'finish') {
+
+            Shopware()->PluginLogger()->info('komfortkasse onPostDispatchCheckout');
 
             $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
             if (!$config ['active']) {
@@ -123,9 +153,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 $query = http_build_query(array ('number' => $ordernum,'url' => $site_url ));
             } else {
                 $temp_id = $_SESSION ['Shopware'] ['sessionId'];
-                $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
-                ));
-
+                $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id));
                 $query = http_build_query(array ('id' => $id,'url' => $site_url ));
             }
             $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query);
