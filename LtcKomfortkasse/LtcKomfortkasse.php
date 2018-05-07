@@ -75,12 +75,12 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
     public function updateOrder($arguments)
     {
-        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
+        $order = $arguments->get('entity');
+
+        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse', $order->getShop());
         if (!$config ['active']) {
             return;
         }
-
-        $order = $arguments->get('entity');
 
         Shopware()->PluginLogger()->info('komfortkasse updateorder ' . $order->getNumber());
 
