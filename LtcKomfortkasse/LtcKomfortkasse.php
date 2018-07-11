@@ -88,10 +88,11 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
         if ($order->getNumber()) {
             $historyList = $order->getHistory();
-            Shopware()->PluginLogger()->info('komfortkasse count ' . $historyList->count());
-            if ($historyList->count() == 1)
+            $count = $historyList === null ? null : $historyList->count();
+            Shopware()->PluginLogger()->info('komfortkasse count ' . $count);
+            if ($count === 1)
                 Shopware()->PluginLogger()->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
-            if ($historyList->count() == 0 || ($historyList->count() == 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
+            if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
                 Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
                 $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
                 $query = http_build_query(array ('id' => $order->getId(),'url' => $site_url
