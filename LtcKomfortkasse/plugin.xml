@@ -44,5 +44,10 @@
         <changes lang="de">Bugfix für die Verwendung von Brickfox</changes>
         <changes lang="en">Bugfix for using Brickfox</changes>
     </changelog>
+    <changelog version="1.5.5">
+        <changes lang="de">Verbesserung bei der Anbindung von Test-Shops</changes>
+        <changes lang="en">Improvements for connecting test shops</changes>
+    </changelog>
+    
     
 </plugin>

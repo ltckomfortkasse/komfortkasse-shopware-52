@@ -95,7 +95,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
             if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
                 Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
                 $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
-                $query = http_build_query(array ('id' => $order->getId(),'url' => $site_url
+                $query = http_build_query(array ('id' => $order->getId(), 'number' => $order->getNumber(), 'url' => $site_url
                 ));
                 $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
                 );

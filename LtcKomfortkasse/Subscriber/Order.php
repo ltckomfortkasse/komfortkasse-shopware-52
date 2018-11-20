@@ -23,6 +23,7 @@ class Order implements \Enlight\Event\SubscriberInterface
         }
         $order = $args->getSubject();
         $orderNumber = $order->sOrderNumber;
+        $orderId = $args->get('orderId');
 
         Shopware()->PluginLogger()->info('komfortkasse subscriber insert ' . $orderNumber);
 
@@ -31,7 +32,7 @@ class Order implements \Enlight\Event\SubscriberInterface
         if ($orderNumber) {
             Shopware()->PluginLogger()->info('komfortkasse notify number ' . $orderNumber);
             $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
-            $query = http_build_query(array ('id' => $orderNumber,'url' => $site_url
+            $query = http_build_query(array ('id' => $orderId, 'number' => $orderNumber, 'url' => $site_url
             ));
             $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
             );
