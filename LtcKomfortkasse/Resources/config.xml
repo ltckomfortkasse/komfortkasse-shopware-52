@@ -15,5 +15,14 @@
             <description lang="de">Storniert Bestellpositionen wenn eine Bestellung storniert wird. Nur relevant wenn Shopware ERP (ehem. Pickware) verwendet wird!</description>
             <description lang="en">Cancels order items when an order is canceled. Only relevant if Shopware ERP (former Pickware) is used!</description>
         </element>
+        <element required="false" type="combo" scope="shop">
+            <name>refundDocumentType</name>
+            <label lang="de">Dokumenten-Typ für Rückerstattungen</label>
+            <label lang="en">Document type for refunds</label>
+            <value>3</value>
+            <description lang="de">Dokumenten-Typ für die automatische Erzeugung von Rückerstattungen. Nur relevant, wenn Rückerstattungen aus dem Shopsystem im Komfortkasse Händlerbereich aktiviert sind.</description>
+            <description lang="en">Document type for automatic creation of refunds. Only relevant if refunds from shop system are activated in Komfortkasse merchant area.</description>
+            <store>Shopware.apps.Base.store.DocType</store>
+        </element>
     </elements>
 </config>

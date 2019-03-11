@@ -20,6 +20,14 @@ class Shopware_Controllers_Api_Refund extends Shopware_Controllers_Api_Rest
      */
     public function indexAction()
     {
+        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
+        $docType = $config ['refundDocumentType'];
+        if (!$docType) {
+            $result['success'] = false;
+            $this->View()->assign($result);
+            return;
+        }
+
         $limit = $this->Request()->getParam('limit', 1000);
         $offset = $this->Request()->getParam('start', 0);
         $sort = $this->Request()->getParam('sort', []);
@@ -28,7 +36,7 @@ class Shopware_Controllers_Api_Refund extends Shopware_Controllers_Api_Rest
         $c = count($filter);
         $filter[$c]['property'] = 'type';
         $filter[$c]['expression'] = '=';
-        $filter[$c]['value'] = '3';
+        $filter[$c]['value'] = $docType;
         $c++;
         $filter[$c]['property'] = 'date';
         $filter[$c]['expression'] = '>';
