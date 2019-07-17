@@ -52,6 +52,8 @@
         <changes lang="de">Dokumenten-Typ für Rückerstattungen</changes>
         <changes lang="en">Document type for refunds</changes>
     </changelog>
-    
-    
+    <changelog version="1.5.7">
+        <changes lang="de">Verbesserungen bei der Verwendung von Subshops</changes>
+        <changes lang="en">Improvements for using subshops</changes>
+    </changelog>
 </plugin>
