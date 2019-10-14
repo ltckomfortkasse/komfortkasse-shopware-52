@@ -94,8 +94,8 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 Shopware()->PluginLogger()->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
             if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
                 Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
-                $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
-                $query = http_build_query(array ('id' => $order->getId(), 'number' => $order->getNumber(), 'url' => $site_url
+                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $order->getId());
+                $query = http_build_query(array ('id' => $order->getId(), 'number' => $order->getNumber(), 'url' => $shopurl
                 ));
                 $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
                 );
@@ -154,16 +154,17 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 return;
             }
 
-            $site_url = Shopware()->System()->sCONFIG ["sBASEPATH"];
             $ordernum = $_SESSION ['Shopware'] ['sOrderVariables']->sOrderNumber;
             if ($ordernum) {
-                $query = http_build_query(array ('number' => $ordernum,'url' => $site_url
+                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.ordernumber = " . $ordernum);
+                $query = http_build_query(array ('number' => $ordernum,'url' => $shopurl
                 ));
             } else {
                 $temp_id = $_SESSION ['Shopware'] ['sessionId'];
                 $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
                 ));
-                $query = http_build_query(array ('id' => $id,'url' => $site_url
+                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $id);
+                $query = http_build_query(array ('id' => $id,'url' => $shopurl
                 ));
             }
             $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
