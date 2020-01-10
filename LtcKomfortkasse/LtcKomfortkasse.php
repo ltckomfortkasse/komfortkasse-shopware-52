@@ -95,7 +95,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
             if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
                 Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
                 $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $order->getId());
-                $query = http_build_query(array ('id' => $order->getId(), 'number' => $order->getNumber(), 'url' => $shopurl
+                $query = http_build_query(array ('id' => $order->getId(),'number' => $order->getNumber(),'url' => $shopurl
                 ));
                 $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
                 );
@@ -161,18 +161,24 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 ));
             } else {
                 $temp_id = $_SESSION ['Shopware'] ['sessionId'];
-                $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
-                ));
-                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $id);
-                $query = http_build_query(array ('id' => $id,'url' => $shopurl
-                ));
+                if ($temp_id) {
+                    $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
+                    ));
+                    if ($id) {
+                        $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $id);
+                        $query = http_build_query(array ('id' => $id,'url' => $shopurl
+                        ));
+                    }
+                }
             }
-            $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-            );
-            $context = stream_context_create(array ('http' => $contextData
-            ));
+            if ($query) {
+                $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+                );
+                $context = stream_context_create(array ('http' => $contextData
+                ));
 
-            $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+                $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+            }
         }
 
     }
