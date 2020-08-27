@@ -2,6 +2,8 @@
 
 namespace LtcKomfortkasse;
 
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
+
 class LtcKomfortkasse extends \Shopware\Components\Plugin
 {
 
@@ -111,29 +113,50 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
         if (!$config ['cancelDetail']) {
             return;
         }
-        if (!method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonCanceledQuantity'))
-            return;
+
+        // only if cancelled with Komfortkasse transaction
 
         if (strpos($order->getTransactionID(), 'Komfortkasse') === false)
             return;
 
         $history = $order->getHistory()->last();
         if ($history && $history->getPreviousOrderStatus()->getId() != 4 && $history->getOrderStatus()->getId() == 4) {
-            $em = Shopware()->Container()->get('models');
-            foreach ($order->getDetails()->toArray() as $detail) {
-                $attr = $detail->getAttribute();
-                if ($attr) {
-                    $qty = $detail->getQuantity();
-                    $detail->setQuantity(0);
-                    $detail->setShipped(0);
-                    $attr->setViisonCanceledQuantity($attr->getViisonCanceledQuantity() + $qty);
-                    // ab Shopware 5.2 existiert die Methode setViisonPickedQuantity nicht mehr
-                    if (method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonPickedQuantity'))
-                        $attr->setViisonPickedQuantity(0);
-                    $em->persist($detail);
+
+            if (method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonCanceledQuantity')) {
+
+                // old Pickware Versions
+
+                $em = Shopware()->Container()->get('models');
+                foreach ($order->getDetails()->toArray() as $detail) {
+                    $attr = $detail->getAttribute();
+                    if ($attr) {
+                        $qty = $detail->getQuantity();
+                        $detail->setQuantity(0);
+                        $detail->setShipped(0);
+                        $attr->setViisonCanceledQuantity($attr->getViisonCanceledQuantity() + $qty);
+                        // ab Shopware 5.2 existiert die Methode setViisonPickedQuantity nicht mehr
+                        if (method_exists('Shopware\Models\Attribute\OrderDetail', 'setViisonPickedQuantity'))
+                            $attr->setViisonPickedQuantity(0);
+                        $em->persist($detail);
+                    }
+                }
+                $em->flush();
+
+            } else {
+
+                // Pickware >= 6.0.0
+
+                try {
+
+                    $orderCancelerService = $this->container->get('pickware.erp.order_canceler_service');
+                    Shopware()->PluginLogger()->info('komfortkasse cancel pickware details ' . $order->getNumber());
+                    foreach ($order->getDetails()->toArray() as $orderDetail) {
+                        $orderCancelerService->cancelRemainingQuantityToShipOfOrderDetail($orderDetail, $orderDetail->getQuantity());
+                    }
+                } catch ( ServiceNotFoundException $e ) {
+                    Shopware()->PluginLogger()->warn('komfortkasse cancel pickware details error: service not found (maybe using pickware below 6.0.0.?)');
                 }
             }
-            $em->flush();
         }
 
     }
