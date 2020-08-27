@@ -7,6 +7,10 @@
     <link>https://komfortkasse.eu/shopware</link>
     <author>Komfortkasse</author>
     <compatibility minVersion="5.2.17"/>
+    <copyright>(c) by LTC Information Services GmbH</copyright>
+    <license>MIT</license>
+    <description lang="de">Mit Komfortkasse werden Zahlungseingänge vom Bankkonto abgerufen und automatisch den offenen Bestellungen zugeordnet. Die Zuordnung erfolgt vollautomatisch im Hintergrund und ist fehlertolerant, d.h. es können auch Bestellungen zugeordnet werden wenn der Name nicht übereinstimmt, die Bestellnummer nicht angegeben wurde oder der Betrag abweicht.</description>
+    <description lang="en">Komfortkasse retrieves bank transfers from a bank account and automatically assignes them to unpaid orders. The assignment is done automatically in the background and is fault-tolerant, i.e. an order can still be assigned if the name does not match, the order number is not specified or the amount differs.</description>
     
     <changelog version="1.3.0">
         <changes lang="de">Umgestellt auf 5.2-Plugin; API Endpoint 'document' hinzugefügt</changes>
