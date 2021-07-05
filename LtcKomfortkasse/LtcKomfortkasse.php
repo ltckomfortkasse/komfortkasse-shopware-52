@@ -84,18 +84,18 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
             return;
         }
 
-        Shopware()->PluginLogger()->info('komfortkasse updateorder ' . $order->getNumber());
+        Shopware()->Container()->get('pluginlogger')->info('komfortkasse updateorder ' . $order->getNumber());
 
         // if order is new: notify Komfortkasse about order
 
         if ($order->getNumber()) {
             $historyList = $order->getHistory();
             $count = $historyList === null ? null : $historyList->count();
-            Shopware()->PluginLogger()->info('komfortkasse count ' . $count);
+            Shopware()->Container()->get('pluginlogger')->info('komfortkasse count ' . $count);
             if ($count === 1)
-                Shopware()->PluginLogger()->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
+                Shopware()->Container()->get('pluginlogger')->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
             if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
-                Shopware()->PluginLogger()->info('komfortkasse notify id ' . $order->getId());
+                Shopware()->Container()->get('pluginlogger')->info('komfortkasse notify id ' . $order->getId());
                 $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $order->getId());
                 $query = http_build_query(array ('id' => $order->getId(),'number' => $order->getNumber(),'url' => $shopurl
                 ));
@@ -149,12 +149,12 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 try {
 
                     $orderCancelerService = $this->container->get('pickware.erp.order_canceler_service');
-                    Shopware()->PluginLogger()->info('komfortkasse cancel pickware details ' . $order->getNumber());
+                    Shopware()->Container()->get('pluginlogger')->info('komfortkasse cancel pickware details ' . $order->getNumber());
                     foreach ($order->getDetails()->toArray() as $orderDetail) {
                         $orderCancelerService->cancelRemainingQuantityToShipOfOrderDetail($orderDetail, $orderDetail->getQuantity());
                     }
                 } catch ( ServiceNotFoundException $e ) {
-                    Shopware()->PluginLogger()->warn('komfortkasse cancel pickware details error: service not found (maybe using pickware below 6.0.0.?)');
+                    Shopware()->Container()->get('pluginlogger')->warn('komfortkasse cancel pickware details error: service not found (maybe using pickware below 6.0.0.?)');
                 }
             }
         }
@@ -170,7 +170,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
         if ($action === 'finish') {
 
-            Shopware()->PluginLogger()->info('komfortkasse onPostDispatchCheckout');
+            Shopware()->Container()->get('pluginlogger')->info('komfortkasse onPostDispatchCheckout');
 
             $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('LtcKomfortkasse');
             if (!$config ['active']) {
