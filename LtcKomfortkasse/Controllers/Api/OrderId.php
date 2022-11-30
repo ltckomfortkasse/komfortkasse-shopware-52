@@ -5,6 +5,7 @@
  */
 class Shopware_Controllers_Api_OrderId extends Shopware_Controllers_Api_Rest
 {
+
     /**
      * GET Request on /api/orderId
      */
@@ -22,18 +23,26 @@ class Shopware_Controllers_Api_OrderId extends Shopware_Controllers_Api_Rest
         $id = $this->Request()->getParam('id');
         $useNumberAsId = $this->Request()->getParam('useNumberAsId');
         $subshops = $this->Request()->getParam('subshops');
+        $subshops_array = $subshops ? array_map('intval', explode(',', $subshops)) : null;
 
         $sql = 'select id from s_order where ';
         $sql .= ($useNumberAsId == 'true' ? 'ordernumber' : 'id');
-        $sql .= '=\'' . $id . '\'';
+        $sql .= '=?';
         if ($subshops)
-            $sql .= ' and subshopID in (' . $subshops . ')';
+            $sql .= ' and subshopID in (' . str_repeat('?,', count($subshops_array) - 1) . '?)';
 
-        $id = Shopware()->Db()->fetchOne($sql);
-        $data['id'] = ($id === false ? null : $id);
+        $stmt = Shopware()->Db()->prepare($sql);
 
-        $this->View()->assign(['success' => true, 'data' => $data]);
+        $stmt->bindValue(1, $id);
+        for($i = 0; $i < count($subshops_array); $i++)
+            $stmt->bindValue($i + 2, $subshops_array [$i]);
+
+        $stmt->execute();
+        $result = $stmt->fetch();
+        $id = $result ['id'];
+        $data ['id'] = ($id === false ? null : $id);
+
+        $this->View()->assign([ 'success' => true,'data' => $data
+        ]);
     }
-
-
 }
