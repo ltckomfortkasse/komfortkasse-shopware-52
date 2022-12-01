@@ -96,7 +96,13 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 Shopware()->Container()->get('pluginlogger')->info('komfortkasse last status ' . $historyList->last()->getPreviousPaymentStatus()->getId());
             if ($count === null || $count === 0 || ($count === 1 && $historyList->last()->getPreviousPaymentStatus()->getId() == 0)) {
                 Shopware()->Container()->get('pluginlogger')->info('komfortkasse notify id ' . $order->getId());
-                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $order->getId());
+
+                $stmt = Shopware()->Db()->prepare('SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = ?');
+                $stmt->bindValue(1, $order->getId());
+                $stmt->execute();
+                $result = $stmt->fetch();
+                $shopurl = $result ['host'];
+
                 $query = http_build_query(array ('id' => $order->getId(),'number' => $order->getNumber(),'url' => $shopurl
                 ));
                 $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
