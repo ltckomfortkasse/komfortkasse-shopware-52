@@ -185,7 +185,12 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
 
             $ordernum = $_SESSION ['Shopware'] ['sOrderVariables']->sOrderNumber;
             if ($ordernum) {
-                $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.ordernumber = '" . $ordernum . "'");
+                $stmt = Shopware()->Db()->prepare('SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.ordernumber = ?');
+                $stmt->bindValue(1, $ordernum);
+                $stmt->execute();
+                $result = $stmt->fetch();
+                $shopurl = $result ['host'];
+
                 $query = http_build_query(array ('number' => $ordernum,'url' => $shopurl
                 ));
             } else {
@@ -194,7 +199,12 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                     $id = Shopware()->Db()->fetchOne("SELECT id FROM s_order WHERE temporaryID = ?", array ($temp_id
                     ));
                     if ($id) {
-                        $shopurl = Shopware()->Db()->fetchOne("SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = " . $id);
+                        $stmt = Shopware()->Db()->prepare('SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.id = ?');
+                        $stmt->bindValue(1, $id);
+                        $stmt->execute();
+                        $result = $stmt->fetch();
+                        $shopurl = $result ['host'];
+
                         $query = http_build_query(array ('id' => $id,'url' => $shopurl
                         ));
                     }
