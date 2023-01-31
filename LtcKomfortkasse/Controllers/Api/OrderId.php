@@ -23,7 +23,7 @@ class Shopware_Controllers_Api_OrderId extends Shopware_Controllers_Api_Rest
         $id = $this->Request()->getParam('id');
         $useNumberAsId = $this->Request()->getParam('useNumberAsId');
         $subshops = $this->Request()->getParam('subshops');
-        $subshops_array = $subshops ? array_map('intval', explode(',', $subshops)) : null;
+        $subshops_array = $subshops ? array_map('intval', explode(',', $subshops)) : array();
 
         $sql = 'select id from s_order where ';
         $sql .= ($useNumberAsId == 'true' ? 'ordernumber' : 'id');

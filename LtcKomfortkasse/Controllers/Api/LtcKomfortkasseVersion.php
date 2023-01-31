@@ -7,7 +7,7 @@ class Shopware_Controllers_Api_LtcKomfortkasseVersion extends Shopware_Controlle
 {
     public function indexAction()
     {
-        $data['version'] = '1.5.15';
+        $data['version'] = '1.5.16';
         $this->View()->assign(['success' => true, 'data' => $data]);
     }
 
