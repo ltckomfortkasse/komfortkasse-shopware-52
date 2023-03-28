@@ -36,8 +36,8 @@ class Shopware_Controllers_Api_InvoiceOrderId extends Shopware_Controllers_Api_R
         $stmt->bindValue(1, $invoiceNumber);
         for ($i = 0; $i < count($doctypes_array); $i ++)
             $stmt->bindValue($i + 2, $doctypes_array[$i]);
-        for ($i = 0; $i < count($subshops_array); $i ++)
-            $stmt->bindValue($i + 2, $subshops_array[$i]);
+        for ($j = 0; $j < count($subshops_array); $j ++)
+            $stmt->bindValue($j + $i + 2, $subshops_array[$j]);
 
         $stmt->execute();
         $result = $stmt->fetch();
