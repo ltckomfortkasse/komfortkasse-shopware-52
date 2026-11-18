@@ -6,7 +6,7 @@
     <version>1.6.2</version>
     <link>https://komfortkasse.eu/shopsysteme/shopware/</link>
     <author>Komfortkasse</author>
-    <compatibility minVersion="5.2.17"/>
+    <compatibility minVersion="5.5.0"/>
     <copyright>(c) by LTC Information Services GmbH</copyright>
     <license>MIT</license>
     <description lang="de">Mit Komfortkasse werden Zahlungseingänge vom Bankkonto abgerufen und automatisch den offenen Bestellungen zugeordnet. Die Zuordnung erfolgt vollautomatisch im Hintergrund und ist fehlertolerant, d.h. es können auch Bestellungen zugeordnet werden wenn der Name nicht übereinstimmt, die Bestellnummer nicht angegeben wurde oder der Betrag abweicht.</description>
@@ -105,7 +105,7 @@
         <changes lang="en">Improvements for subshop support</changes>
     </changelog>
     <changelog version="1.6.2">
-        <changes lang="de">Sicherheit: Benachrichtigungen über neue Bestellungen werden nur noch per HTTPS mit Zertifikatsprüfung an Komfortkasse gesendet</changes>
-        <changes lang="en">Security: new-order notifications are sent to Komfortkasse over HTTPS only, with certificate verification</changes>
+        <changes lang="de">Sicherheit: Benachrichtigungen über neue Bestellungen werden nur noch per HTTPS mit Zertifikatsprüfung an Komfortkasse gesendet. Erfordert Shopware ab 5.5.</changes>
+        <changes lang="en">Security: new-order notifications are sent to Komfortkasse over HTTPS only, with certificate verification. Requires Shopware 5.5 or later.</changes>
     </changelog>
 </plugin>

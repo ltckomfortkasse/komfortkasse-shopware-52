@@ -1,6 +1,6 @@
 # Komfortkasse-Plugin für Shopware 5
 
-Das Komfortkasse-Plugin für Shopware 5 (ab Version 5.2.17) automatisiert den Zahlungsabgleich für **Vorkasse, Rechnung und Nachnahme**. Komfortkasse ordnet eingehende Überweisungen automatisch den offenen Bestellungen Ihres Shops zu und setzt den Bestellstatus, sobald das Geld da ist. Das Plugin ergänzt die Anbindung des Shopware-Shops an Komfortkasse über die Shopware-API; den Abgleich mit dem Bankkonto übernimmt Komfortkasse.
+Das Komfortkasse-Plugin für Shopware 5 (Shopware 5.5 bis 5.7) automatisiert den Zahlungsabgleich für **Vorkasse, Rechnung und Nachnahme**. Komfortkasse ordnet eingehende Überweisungen automatisch den offenen Bestellungen Ihres Shops zu und setzt den Bestellstatus, sobald das Geld da ist. Das Plugin ergänzt die Anbindung des Shopware-Shops an Komfortkasse über die Shopware-API; den Abgleich mit dem Bankkonto übernimmt Komfortkasse.
 
 [Komfortkasse für Shopware](https://komfortkasse.eu/shopsysteme/shopware/) · [Kostenlos registrieren](https://ssl.komfortkasse.eu/public/register.jsf) · [Installationsanleitung](https://komfortkasse.freshdesk.com/support/solutions/articles/14000114307) · [Hilfe & Dokumentation](https://komfortkasse.freshdesk.com/support/solutions/14000075022) · [Plugin im Shopware Store](https://store.shopware.com/de/ltc2606038817546/zahlungsabgleich-bankabgleich-vollautomatisch-fuer-vorkasse-rechnung-nachnahme.html)
 
@@ -11,7 +11,7 @@ Andere Shopware-Versionen: Für Shopware 6 gibt es das Repository [komfortkasse-
 | Merkmal | Angabe |
 |---|---|
 | Shopsystem | [Shopware](https://www.shopware.com/de/) 5 |
-| Unterstützte Versionen | Shopware ab Version 5.2.17 bis 5.7. Für ältere Versionen: [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware), für Shopware 6: [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6) |
+| Unterstützte Versionen | Shopware 5.5 bis 5.7. Für Shopware vor 5.2.17: [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware), für Shopware 6: [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6) |
 | Zahlungsarten | Vorkasse (Vorauskasse, Banküberweisung), Rechnung (Kauf auf Rechnung), Nachnahme |
 | Aufgabe des Plugins | Meldet neue Bestellungen sofort an Komfortkasse und ergänzt die Shopware-API um Dokumente mit Rechnungs-PDFs, Rückerstattungen aus Shopware-Dokumenten, die Suche nach Bestell- und Rechnungsnummern sowie die Zahlungsarten und Status des Shops. Bestellungen, Bestellstatus und Zahlungsstatus tauscht Komfortkasse über die Shopware-API aus. |
 | Bezugsquelle | [Shopware Store](https://store.shopware.com/de/ltc2606038817546/zahlungsabgleich-bankabgleich-vollautomatisch-fuer-vorkasse-rechnung-nachnahme.html), Name „Zahlungsabgleich/Bankabgleich vollautomatisch für Vorkasse, Rechnung, Nachnahme“. Im Shopware-Backend heißt das Plugin „Komfortkasse - Zahlung per Banküberweisung“ (technischer Name `LtcKomfortkasse`). |
@@ -78,7 +78,7 @@ Die Einstellungen finden Sie in der Konfiguration des Komfortkasse-Plugins im Sh
 
 ## Voraussetzungen
 
-- Shopware ab Version 5.2.17 (Shopware 5)
+- Shopware 5.5 bis 5.7
 - Ein Komfortkasse-Account ([kostenlos registrieren](https://ssl.komfortkasse.eu/public/register.jsf))
 - Ein Bankkonto, das Sie mit Komfortkasse verbinden ([unterstützte Banken](https://komfortkasse.eu/banken/)), oder ein integriertes Bankkonto von Komfortkasse
 - Ein Shopware-Benutzer mit API-Zugang für Komfortkasse, am besten in einer Rolle mit allen Rechten wie `local_admins`. Eine eigene Rolle braucht mindestens `customer`: read, detail und `order`: read, update; für die Option „Bei Stornierung Bestand korrigieren“ im Komfortkasse-Account zusätzlich `article`: read, save.
@@ -138,7 +138,7 @@ Komfortkasse arbeitet mit Ihrem eigenen Bankkonto oder mit einem integrierten Ba
 
 ### Welches Komfortkasse-Plugin brauche ich für Shopware 6 oder ältere Shopware-Versionen?
 
-Dieses Repository gilt für Shopware 5 ab Version 5.2.17. Für Shopware 6 gibt es eine eigene Komfortkasse-App im Shopware Store; ihr Quellcode liegt im Repository [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6), die Einrichtung beschreibt die [Anleitung für Shopware 6](https://komfortkasse.freshdesk.com/support/solutions/articles/14000121818). Für Shopware-Versionen vor 5.2.17 ist das Repository [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware) gedacht. Alle Shopware-Versionen stehen auf der Seite [Komfortkasse für Shopware](https://komfortkasse.eu/shopsysteme/shopware/).
+Dieses Repository gilt für Shopware 5.5 bis 5.7. Für Shopware 6 gibt es eine eigene Komfortkasse-App im Shopware Store; ihr Quellcode liegt im Repository [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6), die Einrichtung beschreibt die [Anleitung für Shopware 6](https://komfortkasse.freshdesk.com/support/solutions/articles/14000121818). Für Shopware-Versionen vor 5.2.17 ist das Repository [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware) gedacht. Alle Shopware-Versionen stehen auf der Seite [Komfortkasse für Shopware](https://komfortkasse.eu/shopsysteme/shopware/).
 
 ### Wie liest Komfortkasse die Bestellungen aus Shopware 5 aus?
 
@@ -156,6 +156,6 @@ Fragen zur Einrichtung beantworten die [Hilfe-Seiten](https://komfortkasse.fresh
 
 **Komfortkasse plugin for Shopware 5.** Komfortkasse automatically matches incoming bank transfers to open orders in your shop and updates the order status as soon as the payment has arrived. It supports prepayment by bank transfer (Vorkasse), invoice and cash on delivery. Komfortkasse is a service of LTC Information Services GmbH for online merchants in Germany, Austria and Switzerland.
 
-The plugin supports Shopware 5.2.17 or later (Shopware 5). For Shopware 6 use [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6), for Shopware versions before 5.2.17 use [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware). It does not add a payment method to the checkout; it works with the shop's existing payment methods (e.g. `prepayment`). Komfortkasse reads orders and updates the order and payment status through the Shopware API; the plugin adds instant notifications for new orders (HTTPS only) and API resources for order documents including invoice PDFs, refunds created from Shopware documents, order lookup by order or invoice number, and the shop's payment methods and states. The plugin is free of charge; Komfortkasse itself is a paid service ([pricing](https://komfortkasse.eu/preise/)).
+The plugin supports Shopware 5.5 to 5.7. For Shopware 6 use [komfortkasse-shopware6](https://github.com/ltckomfortkasse/komfortkasse-shopware6), for Shopware versions before 5.2.17 use [komfortkasse-shopware](https://github.com/ltckomfortkasse/komfortkasse-shopware). It does not add a payment method to the checkout; it works with the shop's existing payment methods (e.g. `prepayment`). Komfortkasse reads orders and updates the order and payment status through the Shopware API; the plugin adds instant notifications for new orders (HTTPS only) and API resources for order documents including invoice PDFs, refunds created from Shopware documents, order lookup by order or invoice number, and the shop's payment methods and states. The plugin is free of charge; Komfortkasse itself is a paid service ([pricing](https://komfortkasse.eu/preise/)).
 
 Installation: install the plugin free of charge from the [Shopware Store](https://store.shopware.com/de/ltc2606038817546/zahlungsabgleich-bankabgleich-vollautomatisch-fuer-vorkasse-rechnung-nachnahme.html), create a Shopware user with API access, enter the user name and API key in your Komfortkasse account and connect the shop there. More information: [Komfortkasse for Shopware](https://komfortkasse.eu/shopsysteme/shopware/) · [Installation guide (English)](https://komfortkasse.freshdesk.com/support/solutions/articles/14000152606)
