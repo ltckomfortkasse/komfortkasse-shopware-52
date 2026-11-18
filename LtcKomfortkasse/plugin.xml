@@ -3,8 +3,8 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/plugin.xsd">
     <label lang="de">Komfortkasse - Zahlung per Banküberweisung</label>
     <label lang="en">Komfortkasse - pay by bank wire transfer</label>
-    <version>1.6.1</version>
-    <link>https://komfortkasse.eu/shopware</link>
+    <version>1.6.2</version>
+    <link>https://komfortkasse.eu/shopsysteme/shopware/</link>
     <author>Komfortkasse</author>
     <compatibility minVersion="5.2.17"/>
     <copyright>(c) by LTC Information Services GmbH</copyright>
@@ -103,5 +103,9 @@
     <changelog version="1.6.1">
         <changes lang="de">Verbesserung bei der Unterstützung von Subshops</changes>
         <changes lang="en">Improvements for subshop support</changes>
+    </changelog>
+    <changelog version="1.6.2">
+        <changes lang="de">Sicherheit: Benachrichtigungen über neue Bestellungen werden nur noch per HTTPS mit Zertifikatsprüfung an Komfortkasse gesendet</changes>
+        <changes lang="en">Security: new-order notifications are sent to Komfortkasse over HTTPS only, with certificate verification</changes>
     </changelog>
 </plugin>

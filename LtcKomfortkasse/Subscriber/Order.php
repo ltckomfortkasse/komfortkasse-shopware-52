@@ -37,13 +37,8 @@ class Order implements \Enlight\Event\SubscriberInterface
 
         if ($orderNumber) {
             Shopware()->Container()->get('pluginlogger')->info('komfortkasse notify number ' . $orderNumber);
-            $query = http_build_query(array ('id' => $orderId, 'number' => $orderNumber, 'url' => $shopurl
+            \LtcKomfortkasse\LtcKomfortkasse::notifyKomfortkasse(array ('id' => $orderId, 'number' => $orderNumber, 'url' => $shopurl
             ));
-            $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-            );
-            $context = stream_context_create(array ('http' => $contextData
-            ));
-            $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
             return;
         }
 

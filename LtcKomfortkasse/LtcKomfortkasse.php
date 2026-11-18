@@ -68,6 +68,40 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
         $this->container->get('loader')->registerNamespace('Shopware\Components', $this->getPath() . '/Components/');
     }
 
+    /**
+     * Notify Komfortkasse about a new order (order id/number and shop host only; Komfortkasse reads
+     * the order via the Shopware API). Sent over TLS only, with peer verification and without
+     * following redirects. Without the https stream wrapper (no openssl extension) nothing is sent
+     * instead of falling back to plain HTTP; Komfortkasse still picks the order up on its regular sync.
+     *
+     * @param array $params
+     * @return string|false response body, false on error
+     */
+    public static function notifyKomfortkasse(array $params)
+    {
+        if (! in_array('https', stream_get_wrappers())) {
+            return false;
+        }
+
+        $query = http_build_query($params);
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'timeout' => 2,
+                'follow_location' => 0,
+                'header' => "Connection: close\r\n" . "Content-Type: application/x-www-form-urlencoded\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",
+                'content' => $query
+            ),
+            'ssl' => array(
+                'verify_peer' => true,
+                'verify_peer_name' => true,
+                'peer_name' => 'ssl.komfortkasse.eu'
+            )
+        ));
+
+        return @file_get_contents('https://ssl.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+    }
+
     public function updateOrder($arguments)
     {
         $order = $arguments->get('entity');
@@ -110,21 +144,11 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 $result = $stmt->fetch();
                 $shopurl = $result['host'];
 
-                $query = http_build_query(array(
+                self::notifyKomfortkasse(array(
                     'id' => $order->getId(),
                     'number' => $order->getNumber(),
                     'url' => $shopurl
                 ));
-                $contextData = array(
-                    'method' => 'POST',
-                    'timeout' => 2,
-                    'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",
-                    'content' => $query
-                );
-                $context = stream_context_create(array(
-                    'http' => $contextData
-                ));
-                $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
                 return;
             }
         }
@@ -203,6 +227,7 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 return;
             }
 
+            $query = null;
             $ordernum = $_SESSION['Shopware']['sOrderVariables']->sOrderNumber;
             if ($ordernum) {
                 $stmt = Shopware()->Db()->prepare('SELECT s.host FROM s_core_shops s join s_order o on s.id=o.subshopID WHERE o.ordernumber = ?');
@@ -211,10 +236,10 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                 $result = $stmt->fetch();
                 $shopurl = $result['host'];
 
-                $query = http_build_query(array(
+                $query = array(
                     'number' => $ordernum,
                     'url' => $shopurl
-                ));
+                );
             } else {
                 $temp_id = $_SESSION['Shopware']['sessionId'];
                 if ($temp_id) {
@@ -228,25 +253,15 @@ class LtcKomfortkasse extends \Shopware\Components\Plugin
                         $result = $stmt->fetch();
                         $shopurl = $result['host'];
 
-                        $query = http_build_query(array(
+                        $query = array(
                             'id' => $id,
                             'url' => $shopurl
-                        ));
+                        );
                     }
                 }
             }
             if ($query) {
-                $contextData = array(
-                    'method' => 'POST',
-                    'timeout' => 2,
-                    'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",
-                    'content' => $query
-                );
-                $context = stream_context_create(array(
-                    'http' => $contextData
-                ));
-
-                $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
+                self::notifyKomfortkasse($query);
             }
         }
     }
